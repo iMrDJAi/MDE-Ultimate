@@ -1,0 +1,29 @@
+:root {
+    --mdc-theme-primary: rgb(16, 29, 85);
+    --mdc-theme-on-primary: rgb(255, 255, 255);
+    --mdc-theme-secondary: rgb(41, 227, 238);
+    --mdc-theme-on-secondary: rgb(0, 0, 0);
+    --mdc-theme-surface: rgb(255, 255, 255);
+    --mdc-theme-on-surface: rgb(0, 0, 0);
+    --mdc-theme-background: rgb(229, 229, 229);
+    --mdc-shape-small: 4px;
+    --mdc-shape-medium: 8px;
+    --mdc-shape-large: 0px;
+}
+
+body {
+    height: 100vh;
+    background: var(--mdc-theme-background);
+}
+.title {
+    color: var(--mdc-theme-on-surface);
+    text-align: center;
+    text-decoration-line: underline;
+}
+.container {
+    width: 100%;
+    max-width: 700px;
+    min-height: 400px;
+    height: 85%;
+    margin: auto;                    
+}
