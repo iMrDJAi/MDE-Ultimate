@@ -5,7 +5,8 @@
   "main": "./src/js/MDEUltimate.js",
   "scripts": {
     "start": "webpack-dev-server --config webpack.dev.js --open",
-    "build": "webpack --config webpack.prod.js"
+    "build": "webpack --config webpack.prod.js",
+	"deploy": "git subtree push --prefix dist origin gh-pages"
   },
   "keywords": [],
   "author": {
