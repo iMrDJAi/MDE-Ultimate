@@ -1,9 +1,9 @@
-const UndoRedojs = require('undoredo.js')
-const Split = require('split.js/dist/split.min.js')
-const renderMarkdown = require('imrdjai-mdr')
-const defaultButtons = require('./defaultButtons')
-const { mdiArrowLeftRightBold } = require('@mdi/js')
-module.exports = class MDEUltimate {
+import UndoRedojs from 'undoredo.js'
+import Split from 'split.js/dist/split.min.js'
+import renderMarkdown from 'imrdjai-mdr'
+import defaultButtons from './defaultButtons'
+import { mdiArrowLeftRightBold } from '@mdi/js'
+export default class MDEUltimate {
     constructor(element, buttons, gutter) {
         //Get the textarea element
         if (element) {

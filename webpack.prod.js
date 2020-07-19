@@ -1,3 +1,4 @@
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
 const HtmlWebpackPlugin = require("html-webpack-plugin")
 const MiniCssExtractPlugin = require("mini-css-extract-plugin")
 const autoprefixer = require('autoprefixer')
@@ -15,11 +16,14 @@ module.exports = {
     },
     optimization: {
         minimizer: [
-          new OptimizeCssAssetsPlugin(),
-          new TerserPlugin()
+            new OptimizeCssAssetsPlugin(),
+            new TerserPlugin()
         ]
     },
     plugins: [
+        new BundleAnalyzerPlugin({
+            analyzerPort: 81
+        }),
         new MiniCssExtractPlugin({ filename: "[name].css" }),
         new HtmlWebpackPlugin({ template: "./src/demo.html" }),
         new CleanWebpackPlugin()
@@ -32,7 +36,7 @@ module.exports = {
                 loader: 'babel-loader'
             },
             {
-                test: /\.scss$/,
+                test: /\.(scss|css)$/,
                 use: [
                     MiniCssExtractPlugin.loader, //2. Extract css into files
                     "css-loader", //1. Turns css into commonjs

@@ -1,27 +1,6 @@
-const { MDCRipple } = require('@material/ripple')
-const {
-    mdiUndo,
-    mdiRedo,
-    mdiFormatBold,
-    mdiFormatItalic,
-    mdiFormatUnderline,
-    mdiFormatStrikethroughVariant,
-    mdiFormatSuperscript,
-    mdiFormatSubscript,
-    mdiFormatHeaderPound, 
-    mdiFormatQuoteOpen,
-    mdiAlert,
-    mdiCodeTags,
-    mdiCodeBraces,
-    mdiFormatListNumbered,
-    mdiFormatListBulleted,
-    mdiTable,
-    mdiLinkVariant,
-    mdiImage,
-    mdiArrowLeftRightBold, 
-    mdiHelpCircle
-} = require('@mdi/js')
-module.exports = mdeUltimate => {
+import { MDCRipple } from '@material/ripple'
+import { mdiUndo, mdiRedo, mdiFormatBold, mdiFormatItalic, mdiFormatUnderline, mdiFormatStrikethroughVariant, mdiFormatSuperscript, mdiFormatSubscript, mdiFormatHeaderPound, mdiFormatQuoteOpen, mdiAlert, mdiCodeTags, mdiCodeBraces, mdiFormatListNumbered, mdiFormatListBulleted, mdiTable, mdiLinkVariant, mdiImage, mdiArrowLeftRightBold, mdiHelpCircle } from '@mdi/js'
+export default mdeUltimate => {
     const defaultButtonsObj = [
         {
             name: "undo",

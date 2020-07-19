@@ -1,13 +1,11 @@
 {
     "presets": [
         ["@babel/preset-env", {
-            "modules": "commonjs"
+            "modules": false
         }]
     ],
     "plugins": [
-        ["@babel/plugin-transform-runtime", {
-            "regenerator": true
-        }],
+        "@babel/plugin-transform-runtime",
         "@babel/plugin-proposal-class-properties"
     ]
 }

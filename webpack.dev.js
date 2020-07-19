@@ -21,7 +21,7 @@ module.exports = {
                 loader: 'babel-loader'
             },
             {
-                test: /\.scss$/,
+                test: /\.(scss|css)$/,
                 use: [
                     "style-loader", //2. Inject styles into DOM
                     "css-loader", //1. Turns css into commonjs
