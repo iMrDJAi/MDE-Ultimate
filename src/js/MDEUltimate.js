@@ -1,5 +1,5 @@
 import UndoRedojs from 'undoredo.js'
-import Split from 'split.js/dist/split.min.js'
+import Split from 'split.js'
 import renderMarkdown from 'imrdjai-mdr'
 import defaultButtons from './defaultButtons'
 import { mdiArrowLeftRightBold } from '@mdi/js'
