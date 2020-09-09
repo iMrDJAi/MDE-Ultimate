@@ -21,10 +21,11 @@ module.exports = {
                 loader: 'babel-loader'
             },
             {
-                test: /\.(scss|css)$/,
+                test: /\.lit\.(scss|css)$/,
                 use: [
-                    "style-loader", //2. Inject styles into DOM
-                    "css-loader", //1. Turns css into commonjs
+                    "lit-scss-loader",
+                    "extract-loader",
+                    "css-loader",
                     { 
                         loader: 'postcss-loader',
                         options: {
@@ -41,11 +42,38 @@ module.exports = {
                         }
                     }
                 ]
+            },
+            {
+                test: /^(?!.*\..*\.(?:scss|css)$).*\.(?:scss|css)$/,
+                use: [
+                    "style-loader", //2. Inject styles into DOM
+                    "css-loader", //1. Turns css into commonjs
+                    { 
+                        loader: 'postcss-loader',
+                        options: {
+                            plugins: () => [autoprefixer()]
+                        }
+                    },
+                    { 
+                        loader: 'sass-loader',
+                        options: {
+                            webpackImporter: false,
+                            sassOptions: {
+                                includePaths: ['node_modules'],
+                            },
+                        }
+                    },
+                ]
             }
       ]
     },
     devServer: {
         historyApiFallback: true,
         port: 81
+    },
+    node: {
+        fs: "empty",
+        net: 'empty',
+        tls: 'empty'
     }
 }

@@ -36,7 +36,35 @@ module.exports = {
                 loader: 'babel-loader'
             },
             {
-                test: /\.(scss|css)$/,
+                test: /\.lit\.(scss|css)$/,
+                use: [
+                    {
+                        loader: 'lit-scss-loader',
+                        options: {
+                            minify: true
+                        },
+                    },
+                    "extract-loader",
+                    "css-loader",
+                    { 
+                        loader: 'postcss-loader',
+                        options: {
+                            plugins: () => [autoprefixer()]
+                        }
+                    },
+                    { 
+                        loader: 'sass-loader',
+                        options: {
+                            webpackImporter: false,
+                            sassOptions: {
+                                includePaths: ['node_modules'],
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                test: /^(?!.*\..*\.(?:scss|css)$).*\.(?:scss|css)$/,
                 use: [
                     MiniCssExtractPlugin.loader, //2. Extract css into files
                     "css-loader", //1. Turns css into commonjs
@@ -58,5 +86,10 @@ module.exports = {
                 ]
             }
         ]
+    },
+    node: {
+        fs: "empty",
+        net: 'empty',
+        tls: 'empty'
     }
 }

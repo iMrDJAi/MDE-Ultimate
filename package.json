@@ -1,6 +1,6 @@
 {
   "name": "mde-ultimate",
-  "version": "0.0.2-beta",
+  "version": "0.1.0-beta",
   "description": "MDE Ultimate is an open source, simple, easy to use and fully featured markdown editor built for the web, powered by cool libraries, and made with Material Design!",
   "main": "./src/js/MDEUltimate.js",
   "scripts": {
@@ -14,9 +14,15 @@
   },
   "license": "MIT",
   "dependencies": {
+    "@material/elevation": "^7.0.0",
+    "@material/icon-button": "^7.0.0",
+    "@material/mwc-icon-button": "^0.18.0",
+    "@material/shape": "^7.0.0",
+    "@material/theme": "^7.0.0",
+    "@material/typography": "^7.0.0",
     "@mdi/js": "^5.3.45",
     "imrdjai-mdr": "0.0.5",
-    "material-components-web": "^7.0.0",
+    "lit-element": "^2.3.1",
     "plyr": "^3.6.2",
     "split.js": "^1.6.2",
     "undoredo.js": "^1.1.0"
@@ -30,7 +36,9 @@
     "babel-loader": "^8.1.0",
     "clean-webpack-plugin": "^3.0.0",
     "css-loader": "^3.6.0",
+    "extract-loader": "^5.1.0",
     "html-webpack-plugin": "^4.3.0",
+    "lit-scss-loader": "^1.0.1",
     "mini-css-extract-plugin": "^0.9.0",
     "optimize-css-assets-webpack-plugin": "^5.0.3",
     "postcss-loader": "^3.0.0",
