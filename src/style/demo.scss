@@ -12,18 +12,25 @@
 }
 
 body {
-    height: 100vh;
     background: var(--mdc-theme-background);
 }
 .title {
     color: var(--mdc-theme-on-surface);
     text-align: center;
     text-decoration-line: underline;
+    font-family: monospace;
+    margin: 70px 10vw 40px 10vw;
 }
 .container {
-    width: 100%;
-    max-width: 700px;
-    min-height: 400px;
-    height: 85%;
-    margin: auto;                    
+    width: 90%;
+    height: 75vh;
+    max-width: 980px;
+    min-height: 500px;
+    margin: auto;
+    box-sizing: border-box;
+}
+.ribbon {
+    position: absolute;
+    top: 0;
+    right: 0;
 }

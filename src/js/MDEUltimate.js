@@ -1,4 +1,4 @@
-import {LitElement, html} from 'lit-element'
+import {LitElement, html} from 'lit'
 import UndoRedojs from 'undoredo.js'
 import Split from 'split.js'
 import renderMarkdown from 'imrdjai-mdr'
@@ -9,6 +9,11 @@ import Style2 from '../style/markdown.lit.scss'
 import Style3 from '../style/MWCIconButton.lit.scss'
 
 export default class MDEUltimate extends LitElement {
+    constructor() {
+        super()
+        this.defaultbuttons = true
+        this.cooldown = 5
+    }
 
     static get styles() {
         return [Style1, Style2]
@@ -16,15 +21,9 @@ export default class MDEUltimate extends LitElement {
 
     static get properties() {
         return {
-            usedefaultbuttons: {type: Boolean},
-            cooldownnumber: {type: Number}
+            defaultbuttons: {type: Boolean},
+            cooldown: {type: Number}
         }
-    }
-
-    constructor() {
-        super()
-        this.usedefaultbuttons = false
-        this.cooldownnumber = 5
     }
 
     render() {
@@ -41,13 +40,11 @@ export default class MDEUltimate extends LitElement {
                 </div>
                 <div class="mde-ultimate-preview"></div>
             </div>
-        `;
+        `
     }
 
     firstUpdated() {
-        super.firstUpdated()
-
-        this.txtHistory = new UndoRedojs(this.cooldownnumber)
+        this.txtHistory = new UndoRedojs(this.cooldown)
         this.previewElement = this.shadowRoot.querySelector('.mde-ultimate-preview')
         this.textArea = this.shadowRoot.querySelector('.mde-ultimate-textarea')
         this.textAreaContainer = this.shadowRoot.querySelector('.mde-ultimate-textarea-container')
@@ -61,16 +58,14 @@ export default class MDEUltimate extends LitElement {
             gutterSize: 0
         })
 
-        if (this.usedefaultbuttons) {
-            let escapeHtml = html => {
+        if (this.defaultbuttons) {
+            const escapeHtml = html => {
+                [/&/g, /"/g, /'/g, /</g, />/g].forEach((reg, i) => {
+                    html = html.replace(reg, ['&amp;', '&quot;', '&#39;', '&lt;', '&gt;'][i])
+                })
                 return html
-                  .replace(/&/g, '&amp;')
-                  .replace(/"/g, '&quot;')
-                  .replace(/'/g, '&#39;')
-                  .replace(/</g, '&lt;')
-                  .replace(/>/g, '&gt;')
             }
-            let config = {
+            const config = {
                 undo: {
                     icon: mdiUndo
                 },
@@ -187,39 +182,37 @@ export default class MDEUltimate extends LitElement {
                 help: {
                     title: 'help',
                     icon: mdiHelpCircle,
-                    text: '***\n\n# [MDE Ultimate](https://github.com/iMrDJAi/MDE-Ultimate "Project Link")\n\n**MDE Ultimate** is an open source, simple, easy to use and fully featured markdown editor built for the web, powered by cool libraries, and made with Material Design!\n\n----\n\n##++Markdown Guide:++\n\n>**Bold**\n>\n>*Italic*\n>\n>++Underline++\n>\n>~~Strickthrough~~\n>\n> Spoiler => >!**not a real spoiler <3**!<\n>\n> [Link](https://github.com/iMrDJAi "My Github")\n>\n> Reddit links /r/DZGC r/DZGC /u/Mr_DJA u/Mr_DJA\n>\n> ++\\*\\*Escaping**+\\+\n\n> Text^(*super script*) more text ^(nested [links](#) ++can++ also work)\n>\n> H^+ 4^`55` big^**small** ^[links with spaces are supported](# "😀")\n> \n> Text~(*sub script*) H~(2)O ~(nested [links](#) ++are supported++)\n>\n> H~2 big~`small` ~[you can use spaces here!](# "yay!!!")\n\n>#H1\n>## H2\n>###  H3\n>####H4\n>##### H5\n>###### H6\n\n>> quote\n>>\n>>> nested \n>>>\n> > > quote\n> > >\n>> 😁\n>>\n>\n>> 😋\n\n>`Inline code. ~~you can\'t format text here~~`\n>\n>```js\n>//code block\n>code("block");\n>function code(block) {\n>    console.log(`code ${block}`);\n>}\n>```\n\n> Ordered list\n> 1. one.\n> 1. two.\n> 2. three.\n> 13. four.\n> 08. five.\n> 2002. six.\n\n> Unordered list\n> - foo.\n> - doo.\n> - bar.\n> - baz.\n\n> Table\n> | 01 | 02 | 03 | 04 |\n> |:---:|:---:|:----:|:----:|\n> | 05 | 06 | 07 | 08 |\n> | 09 | 10 | 11 | 12 |\n\n> Image ![](https://cdn.discordapp.com/attachments/574978692527161345/692796818165071972/ezgif-6-8a32860f90c7.gif "lol")\n>\n> ![image](https://cdn.discordapp.com/attachments/574978692527161345/692795097477021806/DaWae.gif)\n>\n> Video\n> ![video](https://cdn.discordapp.com/attachments/574978692527161345/679098318487420988/vid.mp4)\n>\n> Audio\n> ![audio](https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview118/v4/df/f2/e9/dff2e949-68a6-fe20-bc23-56659e39ecb0/mzaf_1519587992145598191.plus.aac.p.m4a)\n>\n> Youtube video\n> ![youtube video](https://www.youtube.com/watch?v=EHS2Pu_lbvc)\n>\n> Spotify embed\n> ![image](https://open.spotify.com/track/73SpzrcaHk0RQPFP73vqVR)\n>\n> Anything else\n>\n> ![example](https://example.com)'
+                    text: '***\n\n# [MDE Ultimate](https://github.com/iMrDJAi/MDE-Ultimate "Project Link")\n\n**MDE Ultimate** is an open source, simple, easy to use and fully featured markdown editor built for the web, powered by cool libraries, and made with Material Design!\n\n----\n\n##++Markdown Guide:++\n\n>**Bold**\n>\n>*Italic*\n>\n>++Underline++\n>\n>~~Strickthrough~~\n>\n> Spoiler => >!**not a real spoiler <3**!<\n>\n> [Link](https://github.com/iMrDJAi "My Github")\n>\n> Reddit links /r/algeria r/algeria /u/Mr_DJA u/Mr_DJA\n>\n> ++\\*\\*Escaping**+\\+\n\n> Text^(*super script*) more text ^(nested [links](#) ++can++ also work)\n>\n> H^+ 4^`55` big^**small** ^[links with spaces are supported](# "😀")\n> \n> Text~(*sub script*) H~(2)O ~(nested [links](#) ++are supported++)\n>\n> H~2 big~`small` ~[you can use spaces here!](# "yay!!!")\n\n>#H1\n>## H2\n>###  H3\n>####H4\n>##### H5\n>###### H6\n\n>> quote\n>>\n>>> nested \n>>>\n> > > quote\n> > >\n>> 😁\n>>\n>\n>> 😋\n\n>`Inline code. ~~you can\'t format text here~~`\n>\n>```js\n>//code block\n>code("block");\n>function code(block) {\n>    console.log(`code ${block}`);\n>}\n>```\n\n> Ordered list\n> 1. one.\n> 1. two.\n> 2. three.\n> 13. four.\n> 08. five.\n> 2002. six.\n\n> Unordered list\n> - foo.\n> - doo.\n> - bar.\n> - baz.\n\n> Table\n> | 01 | 02 | 03 | 04 |\n> |:---:|:---:|:----:|:----:|\n> | 05 | 06 | 07 | 08 |\n> | 09 | 10 | 11 | 12 |\n\n> Image ![](https://cdn.discordapp.com/attachments/574978692527161345/692796818165071972/ezgif-6-8a32860f90c7.gif "lol")\n>\n> ![image](https://upload.wikimedia.org/wikipedia/en/c/cc/Wojak_cropped.jpg)'
                 }
             }
-            //<mwc-icon-button slot="navigationIcon"><svg viewBox="0 0 24 24" role="presentation"><path d="${config..icon}" style="fill: currentcolor;"></path></svg></mwc-icon-button>
-
-            let defaultButtons = `
-                <mwc-icon-button slot="toolbar" action="undo"><svg viewBox="0 0 24 24" role="presentation"><path d="${config.undo.icon}" style="fill: currentcolor;"></path></svg></mwc-icon-button>
-                <mwc-icon-button slot="toolbar" action="redo"><svg viewBox="0 0 24 24" role="presentation"><path d="${config.redo.icon}" style="fill: currentcolor;"></path></svg></mwc-icon-button>
-                <i slot="toolbar" class="mde-ultimate-separator"></i>
-                <mwc-icon-button slot="toolbar" action="format" starttoken="${escapeHtml(config.bold.starttoken)}" middletoken="${escapeHtml(config.bold.middletoken)}" endtoken="${escapeHtml(config.bold.endtoken)}"><svg viewBox="0 0 24 24" role="presentation"><path d="${config.bold.icon}" style="fill: currentcolor;"></path></svg></mwc-icon-button>
-                <mwc-icon-button slot="toolbar" action="format" starttoken="${escapeHtml(config.italic.starttoken)}" middletoken="${escapeHtml(config.italic.middletoken)}" endtoken="${escapeHtml(config.italic.endtoken)}"><svg viewBox="0 0 24 24" role="presentation"><path d="${config.italic.icon}" style="fill: currentcolor;"></path></svg></mwc-icon-button>
-                <mwc-icon-button slot="toolbar" action="format" starttoken="${escapeHtml(config.underline.starttoken)}" middletoken="${escapeHtml(config.underline.middletoken)}" endtoken="${escapeHtml(config.underline.endtoken)}"><svg viewBox="0 0 24 24" role="presentation"><path d="${config.underline.icon}" style="fill: currentcolor;"></path></svg></mwc-icon-button>
-                <mwc-icon-button slot="toolbar" action="format" starttoken="${escapeHtml(config.strikethrough.starttoken)}" middletoken="${escapeHtml(config.strikethrough.middletoken)}" endtoken="${escapeHtml(config.strikethrough.endtoken)}"><svg viewBox="0 0 24 24" role="presentation"><path d="${config.strikethrough.icon}" style="fill: currentcolor;"></path></svg></mwc-icon-button>
-                <mwc-icon-button slot="toolbar" action="format" starttoken="${escapeHtml(config.supscript.starttoken)}" middletoken="${escapeHtml(config.supscript.middletoken)}" endtoken="${escapeHtml(config.supscript.endtoken)}"><svg viewBox="0 0 24 24" role="presentation"><path d="${config.supscript.icon}" style="fill: currentcolor;"></path></svg></mwc-icon-button>
-                <mwc-icon-button slot="toolbar" action="format" starttoken="${escapeHtml(config.subscript.starttoken)}" middletoken="${escapeHtml(config.subscript.middletoken)}" endtoken="${escapeHtml(config.subscript.endtoken)}"><svg viewBox="0 0 24 24" role="presentation"><path d="${config.subscript.icon}" style="fill: currentcolor;"></path></svg></mwc-icon-button>
-                <i slot="toolbar" class="mde-ultimate-separator"></i>
-                <mwc-icon-button slot="toolbar" action="heading"><svg viewBox="0 0 24 24" role="presentation"><path d="${config.heading.icon}" style="fill: currentcolor;"></path></svg></mwc-icon-button>
-                <mwc-icon-button slot="toolbar" action="quote"><svg viewBox="0 0 24 24" role="presentation"><path d="${config.quote.icon}" style="fill: currentcolor;"></path></svg></mwc-icon-button>
-                <mwc-icon-button slot="toolbar" action="format" starttoken="${escapeHtml(config.spoiler.starttoken)}" middletoken="${escapeHtml(config.spoiler.middletoken)}" endtoken="${escapeHtml(config.spoiler.endtoken)}"><svg viewBox="0 0 24 24" role="presentation"><path d="${config.spoiler.icon}" style="fill: currentcolor;"></path></svg></mwc-icon-button>
-                <mwc-icon-button slot="toolbar" action="format" starttoken="${escapeHtml(config.inlineCode.starttoken)}" middletoken="${escapeHtml(config.inlineCode.middletoken)}" endtoken="${escapeHtml(config.inlineCode.endtoken)}"><svg viewBox="0 0 24 24" role="presentation"><path d="${config.inlineCode.icon}" style="fill: currentcolor;"></path></svg></mwc-icon-button>
-                <mwc-icon-button slot="toolbar" action="format" starttoken="${escapeHtml(config.codeBlock.starttoken)}" middletoken="${escapeHtml(config.codeBlock.middletoken)}" endtoken="${escapeHtml(config.codeBlock.endtoken)}"><svg viewBox="0 0 24 24" role="presentation"><path d="${config.codeBlock.icon}" style="fill: currentcolor;"></path></svg></mwc-icon-button>
-                <i slot="toolbar" class="mde-ultimate-separator"></i>
-                <mwc-icon-button slot="toolbar" action="format" starttoken="${escapeHtml(config.orderedList.starttoken)}" middletoken="${escapeHtml(config.orderedList.middletoken)}"><svg viewBox="0 0 24 24" role="presentation"><path d="${config.orderedList.icon}" style="fill: currentcolor;"></path></svg></mwc-icon-button>
-                <mwc-icon-button slot="toolbar" action="format" starttoken="${escapeHtml(config.unorderedList.starttoken)}" middletoken="${escapeHtml(config.unorderedList.middletoken)}"><svg viewBox="0 0 24 24" role="presentation"><path d="${config.unorderedList.icon}" style="fill: currentcolor;"></path></svg></mwc-icon-button>
-                <mwc-icon-button slot="toolbar" action="format" starttoken="${escapeHtml(config.table.starttoken)}" middletoken="${escapeHtml(config.table.middletoken)}" endtoken="${escapeHtml(config.table.endtoken)}" dontformatselection><svg viewBox="0 0 24 24" role="presentation"><path d="${config.table.icon}" style="fill: currentcolor;"></path></svg></mwc-icon-button>
-                <i slot="toolbar" class="mde-ultimate-separator"></i>
-                <mwc-icon-button slot="toolbar" action="format" starttoken="${escapeHtml(config.link.starttoken)}" middletoken="${escapeHtml(config.link.middletoken)}" endtoken="${escapeHtml(config.link.endtoken)}"><svg viewBox="0 0 24 24" role="presentation"><path d="${config.link.icon}" style="fill: currentcolor;"></path></svg></mwc-icon-button>
-                <mwc-icon-button slot="toolbar" action="format" starttoken="${escapeHtml(config.embed.starttoken)}" middletoken="${escapeHtml(config.embed.middletoken)}" endtoken="${escapeHtml(config.embed.endtoken)}"><svg viewBox="0 0 24 24" role="presentation"><path d="${config.embed.icon}" style="fill: currentcolor;"></path></svg></mwc-icon-button>
-                <i slot="toolbar" class="mde-ultimate-separator"></i>
-                <mwc-icon-button slot="toolbar" action="resize"><svg viewBox="0 0 24 24" role="presentation"><path d="${config.resize.icon}" style="fill: currentcolor;"></path></svg></mwc-icon-button>
-                <mwc-icon-button slot="toolbar" action="template" text="${escapeHtml(config.help.text)}"><svg viewBox="0 0 24 24" role="presentation"><path d="${config.help.icon}" style="fill: currentcolor;"></path></svg></mwc-icon-button>
-                <style slot="toolbar">${Style3.cssText}</style>
-            `
+            const defaultButtons = [
+                `<mwc-icon-button slot="toolbar" action="undo"><svg viewBox="0 0 24 24" role="presentation"><path d="${config.undo.icon}" style="fill: currentcolor;"></path></svg></mwc-icon-button>`,
+                `<mwc-icon-button slot="toolbar" action="redo"><svg viewBox="0 0 24 24" role="presentation"><path d="${config.redo.icon}" style="fill: currentcolor;"></path></svg></mwc-icon-button>`,
+                `<i slot="toolbar" class="mde-ultimate-separator"></i>`,
+                `<mwc-icon-button slot="toolbar" action="format" starttoken="${escapeHtml(config.bold.starttoken)}" middletoken="${escapeHtml(config.bold.middletoken)}" endtoken="${escapeHtml(config.bold.endtoken)}"><svg viewBox="0 0 24 24" role="presentation"><path d="${config.bold.icon}" style="fill: currentcolor;"></path></svg></mwc-icon-button>`,
+                `<mwc-icon-button slot="toolbar" action="format" starttoken="${escapeHtml(config.italic.starttoken)}" middletoken="${escapeHtml(config.italic.middletoken)}" endtoken="${escapeHtml(config.italic.endtoken)}"><svg viewBox="0 0 24 24" role="presentation"><path d="${config.italic.icon}" style="fill: currentcolor;"></path></svg></mwc-icon-button>`,
+                `<mwc-icon-button slot="toolbar" action="format" starttoken="${escapeHtml(config.underline.starttoken)}" middletoken="${escapeHtml(config.underline.middletoken)}" endtoken="${escapeHtml(config.underline.endtoken)}"><svg viewBox="0 0 24 24" role="presentation"><path d="${config.underline.icon}" style="fill: currentcolor;"></path></svg></mwc-icon-button>`,
+                `<mwc-icon-button slot="toolbar" action="format" starttoken="${escapeHtml(config.strikethrough.starttoken)}" middletoken="${escapeHtml(config.strikethrough.middletoken)}" endtoken="${escapeHtml(config.strikethrough.endtoken)}"><svg viewBox="0 0 24 24" role="presentation"><path d="${config.strikethrough.icon}" style="fill: currentcolor;"></path></svg></mwc-icon-button>`,
+                `<mwc-icon-button slot="toolbar" action="format" starttoken="${escapeHtml(config.supscript.starttoken)}" middletoken="${escapeHtml(config.supscript.middletoken)}" endtoken="${escapeHtml(config.supscript.endtoken)}"><svg viewBox="0 0 24 24" role="presentation"><path d="${config.supscript.icon}" style="fill: currentcolor;"></path></svg></mwc-icon-button>`,
+                `<mwc-icon-button slot="toolbar" action="format" starttoken="${escapeHtml(config.subscript.starttoken)}" middletoken="${escapeHtml(config.subscript.middletoken)}" endtoken="${escapeHtml(config.subscript.endtoken)}"><svg viewBox="0 0 24 24" role="presentation"><path d="${config.subscript.icon}" style="fill: currentcolor;"></path></svg></mwc-icon-button>`,
+                `<i slot="toolbar" class="mde-ultimate-separator"></i>`,
+                `<mwc-icon-button slot="toolbar" action="heading"><svg viewBox="0 0 24 24" role="presentation"><path d="${config.heading.icon}" style="fill: currentcolor;"></path></svg></mwc-icon-button>`,
+                `<mwc-icon-button slot="toolbar" action="quote"><svg viewBox="0 0 24 24" role="presentation"><path d="${config.quote.icon}" style="fill: currentcolor;"></path></svg></mwc-icon-button>`,
+                `<mwc-icon-button slot="toolbar" action="format" starttoken="${escapeHtml(config.spoiler.starttoken)}" middletoken="${escapeHtml(config.spoiler.middletoken)}" endtoken="${escapeHtml(config.spoiler.endtoken)}"><svg viewBox="0 0 24 24" role="presentation"><path d="${config.spoiler.icon}" style="fill: currentcolor;"></path></svg></mwc-icon-button>`,
+                `<mwc-icon-button slot="toolbar" action="format" starttoken="${escapeHtml(config.inlineCode.starttoken)}" middletoken="${escapeHtml(config.inlineCode.middletoken)}" endtoken="${escapeHtml(config.inlineCode.endtoken)}"><svg viewBox="0 0 24 24" role="presentation"><path d="${config.inlineCode.icon}" style="fill: currentcolor;"></path></svg></mwc-icon-button>`,
+                `<mwc-icon-button slot="toolbar" action="format" starttoken="${escapeHtml(config.codeBlock.starttoken)}" middletoken="${escapeHtml(config.codeBlock.middletoken)}" endtoken="${escapeHtml(config.codeBlock.endtoken)}"><svg viewBox="0 0 24 24" role="presentation"><path d="${config.codeBlock.icon}" style="fill: currentcolor;"></path></svg></mwc-icon-button>`,
+                `<i slot="toolbar" class="mde-ultimate-separator"></i>`,
+                `<mwc-icon-button slot="toolbar" action="format" starttoken="${escapeHtml(config.orderedList.starttoken)}" middletoken="${escapeHtml(config.orderedList.middletoken)}"><svg viewBox="0 0 24 24" role="presentation"><path d="${config.orderedList.icon}" style="fill: currentcolor;"></path></svg></mwc-icon-button>`,
+                `<mwc-icon-button slot="toolbar" action="format" starttoken="${escapeHtml(config.unorderedList.starttoken)}" middletoken="${escapeHtml(config.unorderedList.middletoken)}"><svg viewBox="0 0 24 24" role="presentation"><path d="${config.unorderedList.icon}" style="fill: currentcolor;"></path></svg></mwc-icon-button>`,
+                `<mwc-icon-button slot="toolbar" action="format" starttoken="${escapeHtml(config.table.starttoken)}" middletoken="${escapeHtml(config.table.middletoken)}" endtoken="${escapeHtml(config.table.endtoken)}" dontformatselection><svg viewBox="0 0 24 24" role="presentation"><path d="${config.table.icon}" style="fill: currentcolor;"></path></svg></mwc-icon-button>`,
+                `<i slot="toolbar" class="mde-ultimate-separator"></i>`,
+                `<mwc-icon-button slot="toolbar" action="format" starttoken="${escapeHtml(config.link.starttoken)}" middletoken="${escapeHtml(config.link.middletoken)}" endtoken="${escapeHtml(config.link.endtoken)}"><svg viewBox="0 0 24 24" role="presentation"><path d="${config.link.icon}" style="fill: currentcolor;"></path></svg></mwc-icon-button>`,
+                `<mwc-icon-button slot="toolbar" action="format" starttoken="${escapeHtml(config.embed.starttoken)}" middletoken="${escapeHtml(config.embed.middletoken)}" endtoken="${escapeHtml(config.embed.endtoken)}"><svg viewBox="0 0 24 24" role="presentation"><path d="${config.embed.icon}" style="fill: currentcolor;"></path></svg></mwc-icon-button>`,
+                `<i slot="toolbar" class="mde-ultimate-separator"></i>`,
+                `<mwc-icon-button slot="toolbar" action="resize"><svg viewBox="0 0 24 24" role="presentation"><path d="${config.resize.icon}" style="fill: currentcolor;"></path></svg></mwc-icon-button>`,
+                `<mwc-icon-button slot="toolbar" action="template" text="${escapeHtml(config.help.text)}"><svg viewBox="0 0 24 24" role="presentation"><path d="${config.help.icon}" style="fill: currentcolor;"></path></svg></mwc-icon-button>`,
+                `<style slot="toolbar">${Style3.cssText}</style>`
+            ].join('')
             this.innerHTML = defaultButtons + this.innerHTML
         }
 
@@ -229,14 +222,11 @@ export default class MDEUltimate extends LitElement {
 
         if (typeof this.getAttribute('value') === 'string') this.value = this.getAttribute('value')
         if (typeof this.getAttribute('readonly') === 'string') this.readonly = true
-
-        window.temp0 = this
-        console.log(window.temp0)
     }
 
     undoHandler() {
         if (typeof this.readonly !== 'string') {
-            var txtundo = this.txtHistory.undo()
+            const txtundo = this.txtHistory.undo()
             if (txtundo !== undefined) {
                 this.textArea.value = txtundo
                 this.previewUpdate()
@@ -246,7 +236,7 @@ export default class MDEUltimate extends LitElement {
 
     redoHandler() {
         if (typeof this.readonly !== 'string') {
-            var txtredo = this.txtHistory.redo()
+            const txtredo = this.txtHistory.redo()
             if (txtredo !== undefined) {
                 this.textArea.value = txtredo
                 this.previewUpdate()
@@ -256,25 +246,25 @@ export default class MDEUltimate extends LitElement {
     
     formatHandler(node) {
         if (typeof this.readonly !== 'string') {
-            var selstart = this.textArea.selectionStart
-            var selend = this.textArea.selectionEnd
-            var txt = this.textArea.value
-            var starttoken = (node.getAttribute('starttoken') || '').replace(/\\n/g, '\n')
-            var middletoken = (node.getAttribute('middletoken')|| '').replace(/\\n/g, '\n')
-            var endtoken = (node.getAttribute('endtoken') || '').replace(/\\n/g, '\n')
-            var dontformatselection = node.getAttribute('dontformatselection')
+            const selstart = this.textArea.selectionStart
+            const selend = this.textArea.selectionEnd
+            const txt = this.textArea.value
+            const starttoken = (node.getAttribute('starttoken') || '').replace(/\\n/g, '\n')
+            const middletoken = (node.getAttribute('middletoken')|| '').replace(/\\n/g, '\n')
+            const endtoken = (node.getAttribute('endtoken') || '').replace(/\\n/g, '\n')
+            const dontformatselection = node.getAttribute('dontformatselection')
             if (selstart === selend || typeof dontformatselection === 'string') {
-                var before = txt.substring(0, selend)
-                var after = txt.substring(selend, txt.length)
+                const before = txt.substring(0, selend)
+                const after = txt.substring(selend, txt.length)
                 this.textArea.value = before + starttoken + middletoken + endtoken + after
                 this.textArea.selectionStart = selend + starttoken.length
                 this.textArea.selectionEnd = this.textArea.selectionStart + middletoken.length
                 this.textArea.focus()
                 this.previewUpdateAndRecord()
             } else {
-                var before = txt.substring(0, selstart)
-                var text = txt.substring(selstart, selend)
-                var after = txt.substring(selend, txt.length)
+                const before = txt.substring(0, selstart)
+                const text = txt.substring(selstart, selend)
+                const after = txt.substring(selend, txt.length)
                 this.textArea.value = before + starttoken + text + endtoken + after
                 this.textArea.selectionStart = this.textArea.selectionEnd = selstart + starttoken.length + text.length
                 this.textArea.focus()
@@ -285,12 +275,12 @@ export default class MDEUltimate extends LitElement {
 
     headingHandler() {
         if (typeof this.readonly !== 'string') {
-            var selstart = this.textArea.selectionStart
-            var selend = this.textArea.selectionEnd
-            var txt = this.textArea.value
+            const selstart = this.textArea.selectionStart
+            const selend = this.textArea.selectionEnd
+            const txt = this.textArea.value
             if (selstart === selend) {
-                var before = txt.substring(0, selstart)
-                var after = txt.substring(selend, txt.length)
+                const before = txt.substring(0, selstart)
+                const after = txt.substring(selend, txt.length)
                 if (/(\n)[\#]{1,5}( )$/.test(before)) {
                     before = before.substring(0, selstart - 1)
                     this.textArea.value = before + '# ' + after
@@ -310,9 +300,9 @@ export default class MDEUltimate extends LitElement {
                     this.previewUpdateAndRecord()
                 }
             } else {
-                var before = txt.substring(0, selstart)
-                var text = txt.substring(selstart, selend)
-                var after = txt.substring(selend, txt.length)
+                const before = txt.substring(0, selstart)
+                const text = txt.substring(selstart, selend)
+                const after = txt.substring(selend, txt.length)
                 this.textArea.value = before + '\n# ' + text + '\n' + after
                 this.textArea.selectionStart = this.textArea.selectionEnd = selstart + text.length + 3
                 this.textArea.focus()
@@ -323,11 +313,11 @@ export default class MDEUltimate extends LitElement {
 
     quoteHandler() {
         if (typeof this.readonly !== 'string') {
-            var selstart = this.textArea.selectionStart
-            var selend = this.textArea.selectionEnd
-            var txt = this.textArea.value
-            var before = txt.substring(0, selstart)
-            var after = txt.substring(selend, txt.length)
+            const selstart = this.textArea.selectionStart
+            const selend = this.textArea.selectionEnd
+            const txt = this.textArea.value
+            const before = txt.substring(0, selstart)
+            const after = txt.substring(selend, txt.length)
             if (selstart === selend) {
                 if (/(^>+( )$)|(\n>+( )$)/.test(before)) {
                     before = before.substring(0, selstart - 1)
@@ -336,14 +326,14 @@ export default class MDEUltimate extends LitElement {
                     this.textArea.focus()
                     this.previewUpdateAndRecord()
                 } else {
-                    var text = txt.substring(selstart - 2, selstart).replace(/\n\n/, '').replace(/^\n/, '').replace(/[^\n]\n/, '\n').replace(/([^\n]|\n)?[^\n]/, '\n\n') + '> '
+                    const text = txt.substring(selstart - 2, selstart).replace(/\n\n/, '').replace(/^\n/, '').replace(/[^\n]\n/, '\n').replace(/([^\n]|\n)?[^\n]/, '\n\n') + '> '
                     this.textArea.value = before + text + after
                     this.textArea.selectionStart = this.textArea.selectionEnd = selstart + text.length
                     this.textArea.focus()
                     this.previewUpdateAndRecord()
                 }
             } else {
-                var text = txt.substring(selstart - 2, selstart).replace(/\n\n/, '').replace(/^\n/, '').replace(/[^\n]\n/, '\n').replace(/([^\n]|\n)?[^\n]/, '\n\n') +
+                const text = txt.substring(selstart - 2, selstart).replace(/\n\n/, '').replace(/^\n/, '').replace(/[^\n]\n/, '\n').replace(/([^\n]|\n)?[^\n]/, '\n\n') +
                 txt.substring(selstart, selend) +
                 txt.substring(selend, selend + 2).replace(/\n\n/, '').replace(/\n[^\n]?/, '\n').replace(/[^\n]([^\n]|\n)?/, '\n\n')
                 text = text.replace(/^(>)/gm, '>$1').replace(/^([^\>|^\n])/gm, '> $1')
@@ -366,8 +356,8 @@ export default class MDEUltimate extends LitElement {
     }
 
     templateHandler(node) {
-        var text = (node.getAttribute('text') || '').replace(/\\n/g, '\n')
-        var editable = node.getAttribute('editable')
+        const text = (node.getAttribute('text') || '').replace(/\\n/g, '\n')
+        const editable = node.getAttribute('editable')
         if (this.textArea.value !== text) {
             if (typeof editable !== 'string') this.readonly = true
             this.textArea.value = text
