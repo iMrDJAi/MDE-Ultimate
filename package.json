@@ -1,6 +1,6 @@
 {
   "name": "mde-ultimate",
-  "version": "0.1.0-beta",
+  "version": "0.2.0-beta",
   "description": "MDE Ultimate is an open source, simple, easy to use and fully featured markdown editor built for the web, powered by cool libraries, and made with Material Design!",
   "main": "./src/js/MDEUltimate.js",
   "scripts": {
@@ -14,16 +14,17 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@material/elevation": "^7.0.0",
-    "@material/icon-button": "^7.0.0",
-    "@material/mwc-icon-button": "^0.18.0",
-    "@material/shape": "^7.0.0",
-    "@material/theme": "^7.0.0",
-    "@material/typography": "^7.0.0",
+    "@material/elevation": "^13.0.0",
+    "@material/icon-button": "^13.0.0",
+    "@material/mwc-icon-button": "^0.25.3",
+    "@material/shape": "^13.0.0",
+    "@material/theme": "^13.0.0",
+    "@material/typography": "^13.0.0",
     "@mdi/js": "^5.9.55",
-    "imrdjai-mdr": "0.0.5",
+    "highlight.js": "^11.5.0",
     "lit": "^2.1.1",
-    "plyr": "^3.6.12",
+    "markdown-it": "^12.3.2",
+    "markdown-it-bidi": "https://github.com/ahangarha/markdown-it-bidi/tarball/full-implementation",
     "split.js": "^1.6.5",
     "undoredo.js": "^1.2.0"
   },

@@ -4,7 +4,7 @@
     --mdc-theme-secondary: rgb(41, 227, 238);
     --mdc-theme-on-secondary: rgb(0, 0, 0);
     --mdc-theme-surface: rgb(255, 255, 255);
-    --mdc-theme-on-surface: rgb(0, 0, 0);
+    --mdc-theme-on-surface: rgba(0, 0, 0, 0.87);
     --mdc-theme-background: rgb(229, 229, 229);
     --mdc-shape-small: 4px;
     --mdc-shape-medium: 8px;
@@ -24,7 +24,7 @@ body {
 .container {
     width: 90%;
     height: 75vh;
-    max-width: 980px;
+    max-width: 880px;
     min-height: 500px;
     margin: auto;
     box-sizing: border-box;

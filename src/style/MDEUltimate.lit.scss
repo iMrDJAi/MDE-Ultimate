@@ -1,7 +1,7 @@
 @use '@material/theme';
-@use "@material/shape";
-@use "@material/elevation";
-@use "@material/typography";
+@use '@material/shape';
+@use '@material/elevation';
+@use '@material/typography';
 
 :host {
     display: grid;
@@ -10,57 +10,55 @@
     overflow: hidden;
     height: 100%;
     width: 100%;
-    @include theme.prop(background-color, surface);
+    @include theme.property(background-color, surface);
     @include shape.radius(medium);
     @include elevation.elevation(1);
 }
 
-.mde-ultimate-toolbar {
+.toolbar {
     user-select: none;
     box-sizing: border-box;
     padding: 10px;
     display: flex;
     flex-wrap: wrap;
-    background: var(--mdc-theme-primary);
-    align-items: center;       
+    align-items: center;
+    justify-content: center;
+    @include theme.property(background, primary);
 }
-
-.mde-ultimate-separator {
-    @include theme.prop(color, on-primary);
+.separator, ::slotted(.separator) {
     opacity: 0.3;
-    margin: 4px;
+    margin: 0 8px;
     border-left: 1px solid;
     height: 14px;
+    @include theme.property(color, on-primary);
 } 
 
-.mde-ultimate-body {
+.body {
     display: flex;
     box-sizing: border-box;
     overflow: hidden;
 }
 
-.mde-ultimate-textarea-container {
+.textarea-container {
     overflow: hidden; 
 }
-
-.mde-ultimate-textarea {
+.textarea {
     height: 100%;
     width: 100%;
-    padding: 15px;
+    padding: 1rem;
     box-sizing: border-box;
+    overflow-x: hidden;
     resize: none;
     outline: none;
     border: none;
-    overflow-x: hidden;
     background: transparent;
-    font-size: 16px;
     unicode-bidi: plaintext;
-    @include theme.prop(color, on-surface);
-    @include typography.base();
+    @include typography.typography(body1);
+    @include theme.property(color, on-surface);
 }
 
-.mde-ultimate-gutter {
-    @include theme.prop(background, primary);
+.gutter {
+    @include theme.property(background, primary);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -68,28 +66,23 @@
     width: 25px !important;
     svg {
         height: 25px;
-        @include theme.prop(color, on-primary);
+        @include theme.property(color, on-primary);
         opacity: 0.6;
     }
 }
-.mde-ultimate-gutter:hover {
+.gutter:hover {
     svg {
         opacity: 1;
     }
 }
-.mde-ultimate-preview {
+
+.preview-container {
+    overflow: hidden; 
+}
+.preview {
+    height: 100%;
+    width: 100%;
+    padding: 1rem;
     box-sizing: border-box;
     overflow: auto;
-    unicode-bidi: plaintext;
-    text-align: left;
-    font-size: 16px;
-    @include theme.prop(color, on-surface);
-    @include typography.base();
-}
-.mde-ultimate-preview > * {
-    margin-left: 15px;
-    margin-right: 15px;
-}
-.mde-ultimate-preview * {
-    unicode-bidi: inherit;
 }

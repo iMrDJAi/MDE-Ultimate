@@ -1,7 +1,7 @@
 import {LitElement, html} from 'lit'
 import UndoRedojs from 'undoredo.js'
 import Split from 'split.js'
-import renderMarkdown from 'imrdjai-mdr'
+import renderMarkdown from './renderMarkdown'
 import '@material/mwc-icon-button'
 import { mdiUndo, mdiRedo, mdiFormatBold, mdiFormatItalic, mdiFormatUnderline, mdiFormatStrikethroughVariant, mdiFormatSuperscript, mdiFormatSubscript, mdiFormatHeaderPound, mdiFormatQuoteOpen, mdiAlert, mdiCodeTags, mdiCodeBraces, mdiFormatListNumbered, mdiFormatListBulleted, mdiTable, mdiLinkVariant, mdiImage, mdiArrowLeftRightBold, mdiHelpCircle } from '@mdi/js'
 import Style1 from '../style/MDEUltimate.lit.scss'
@@ -28,31 +28,36 @@ export default class MDEUltimate extends LitElement {
 
     render() {
         return html `
-            <div class="mde-ultimate-toolbar">
+            <div class="toolbar">
                 <slot name="toolbar"></slot>
             </div>
-            <div class="mde-ultimate-body">
-                <div class="mde-ultimate-textarea-container">
-                    <textarea class="mde-ultimate-textarea" @input=${this.handleTextAreaInput}></textarea>
+            <div class="body">
+                <div class="textarea-container">
+                    <textarea class="textarea" @input=${this.handleTextAreaInput}></textarea>
                 </div>
-                <div class="mde-ultimate-gutter">
+                <div class="gutter">
                     <svg viewBox="0 0 24 24" role="presentation"><path d="${mdiArrowLeftRightBold}" style="fill: currentcolor;"></path></svg>
                 </div>
-                <div class="mde-ultimate-preview"></div>
+                <div class="preview-container">
+                    <div class="preview"></div>
+                </div>
             </div>
         `
     }
 
     firstUpdated() {
-        this.txtHistory = new UndoRedojs(this.cooldown)
-        this.previewElement = this.shadowRoot.querySelector('.mde-ultimate-preview')
-        this.textArea = this.shadowRoot.querySelector('.mde-ultimate-textarea')
-        this.textAreaContainer = this.shadowRoot.querySelector('.mde-ultimate-textarea-container')
-        this.gutter = this.shadowRoot.querySelector('.mde-ultimate-gutter')
-        this.toolbarSlot = this.shadowRoot.querySelector('.mde-ultimate-toolbar > slot')
 
-        this.split = Split([this.textAreaContainer, this.previewElement], {
-            sizes: [100, 0],
+        this.txtHistory = new UndoRedojs(this.cooldown)
+        this.toolbarSlot = this.shadowRoot.querySelector('.toolbar > slot')
+        this.textAreaContainer = this.shadowRoot.querySelector('.textarea-container')
+        this.textArea = this.shadowRoot.querySelector('.textarea')
+        this.gutter = this.shadowRoot.querySelector('.gutter')
+        this.previewContainer = this.shadowRoot.querySelector('.preview-container')
+        this.previewElement = this.shadowRoot.querySelector('.preview')
+       
+
+        this.split = Split([this.textAreaContainer, this.previewContainer], {
+            sizes: [50, 50],
             minSize: [0, 0],
             gutter: () => this.gutter,
             gutterSize: 0
@@ -86,13 +91,6 @@ export default class MDEUltimate extends LitElement {
                     middletoken: 'italic',
                     endtoken: '*'
                 },
-                underline: {
-                    title: 'underline',
-                    icon: mdiFormatUnderline,
-                    starttoken: '++',
-                    middletoken: 'underline',
-                    endtoken: '++'
-                },
                 strikethrough: {
                     title: 'strikethrough',
                     icon: mdiFormatStrikethroughVariant,
@@ -100,32 +98,11 @@ export default class MDEUltimate extends LitElement {
                     middletoken: 'strikethrough',
                     endtoken: '~~'
                 },
-                supscript: {
-                    title: 'supscript',
-                    icon: mdiFormatSuperscript,
-                    starttoken: '^(',
-                    middletoken: 'supscript',
-                    endtoken: ')'
-                },
-                subscript: {
-                    title: 'subscript',
-                    icon: mdiFormatSubscript,
-                    starttoken: '~(',
-                    middletoken: 'subscript',
-                    endtoken: ')'
-                },
                 heading: {
                     icon: mdiFormatHeaderPound
                 },
                 quote: {
                     icon: mdiFormatQuoteOpen
-                },
-                spoiler: {
-                    title: 'spoiler',
-                    icon: mdiAlert,
-                    starttoken: '>!',
-                    middletoken: 'spoiler',
-                    endtoken: '!<'
                 },
                 inlineCode: {
                     title: 'inline code',
@@ -169,12 +146,12 @@ export default class MDEUltimate extends LitElement {
                     middletoken: 'link',
                     endtoken: '](https://www.example.com "link")'
                 },
-                embed: {
-                    title: 'embed',
+                image: {
+                    title: 'image',
                     icon: mdiImage,
                     starttoken: '![',
-                    middletoken: 'embed',
-                    endtoken: '](https://www.example.com "embed")'
+                    middletoken: 'image',
+                    endtoken: '](https://www.example.com "image")'
                 },
                 resize: {
                     icon: mdiArrowLeftRightBold
@@ -182,33 +159,29 @@ export default class MDEUltimate extends LitElement {
                 help: {
                     title: 'help',
                     icon: mdiHelpCircle,
-                    text: '***\n\n# [MDE Ultimate](https://github.com/iMrDJAi/MDE-Ultimate "Project Link")\n\n**MDE Ultimate** is an open source, simple, easy to use and fully featured markdown editor built for the web, powered by cool libraries, and made with Material Design!\n\n----\n\n##++Markdown Guide:++\n\n>**Bold**\n>\n>*Italic*\n>\n>++Underline++\n>\n>~~Strickthrough~~\n>\n> Spoiler => >!**not a real spoiler <3**!<\n>\n> [Link](https://github.com/iMrDJAi "My Github")\n>\n> Reddit links /r/algeria r/algeria /u/Mr_DJA u/Mr_DJA\n>\n> ++\\*\\*Escaping**+\\+\n\n> Text^(*super script*) more text ^(nested [links](#) ++can++ also work)\n>\n> H^+ 4^`55` big^**small** ^[links with spaces are supported](# "😀")\n> \n> Text~(*sub script*) H~(2)O ~(nested [links](#) ++are supported++)\n>\n> H~2 big~`small` ~[you can use spaces here!](# "yay!!!")\n\n>#H1\n>## H2\n>###  H3\n>####H4\n>##### H5\n>###### H6\n\n>> quote\n>>\n>>> nested \n>>>\n> > > quote\n> > >\n>> 😁\n>>\n>\n>> 😋\n\n>`Inline code. ~~you can\'t format text here~~`\n>\n>```js\n>//code block\n>code("block");\n>function code(block) {\n>    console.log(`code ${block}`);\n>}\n>```\n\n> Ordered list\n> 1. one.\n> 1. two.\n> 2. three.\n> 13. four.\n> 08. five.\n> 2002. six.\n\n> Unordered list\n> - foo.\n> - doo.\n> - bar.\n> - baz.\n\n> Table\n> | 01 | 02 | 03 | 04 |\n> |:---:|:---:|:----:|:----:|\n> | 05 | 06 | 07 | 08 |\n> | 09 | 10 | 11 | 12 |\n\n> Image ![](https://cdn.discordapp.com/attachments/574978692527161345/692796818165071972/ezgif-6-8a32860f90c7.gif "lol")\n>\n> ![image](https://upload.wikimedia.org/wikipedia/en/c/cc/Wojak_cropped.jpg)'
+                    text: '***\n\n# [MDE Ultimate](https://github.com/iMrDJAi/MDE-Ultimate "Project Link")\n\n**MDE Ultimate** is an open source, simple, easy to use and fully featured markdown editor built for the web, powered by cool libraries, and made with Material Design!\n\n----\n\n## Markdown Guide:\n\n>**Bold**\n>\n>*Italic*\n>\n>~~Strickthrough~~\n>\n>[Link](https://github.com/iMrDJAi "My Github")\n>\n>~~\\*\\*Escaping**~\\~\n\n># H1\n>## H2\n>###  H3\n>#### H4\n>##### H5\n>###### H6\n\n>> quote\n>>\n>>> nested \n>>>\n> > > quote\n> > >\n>> 😁\n>>\n>\n>> 😋\n\n>`Inline code. ~~you can\'t format text here~~`\n>\n>```js\n>//code block\n>code("block");\n>function code(block) {\n>    console.log(`code ${block}`);\n>}\n>```\n\n> Ordered list\n> 1. one.\n> 1. two.\n> 2. three.\n> 13. four.\n> 08. five.\n> 2002. six.\n\n> Unordered list\n> - foo.\n> - doo.\n> - bar.\n> - baz.\n\n> Table\n> | 01 | 02 | 03 | 04 |\n> |:---:|:---:|:----:|:----:|\n> | 05 | 06 | 07 | 08 |\n> | 09 | 10 | 11 | 12 |\n\n> Image ![](https://cdn.discordapp.com/attachments/574978692527161345/692796818165071972/ezgif-6-8a32860f90c7.gif "lol")\n>\n> ![image](https://upload.wikimedia.org/wikipedia/en/c/cc/Wojak_cropped.jpg)'
                 }
             }
             const defaultButtons = [
                 `<mwc-icon-button slot="toolbar" action="undo"><svg viewBox="0 0 24 24" role="presentation"><path d="${config.undo.icon}" style="fill: currentcolor;"></path></svg></mwc-icon-button>`,
                 `<mwc-icon-button slot="toolbar" action="redo"><svg viewBox="0 0 24 24" role="presentation"><path d="${config.redo.icon}" style="fill: currentcolor;"></path></svg></mwc-icon-button>`,
-                `<i slot="toolbar" class="mde-ultimate-separator"></i>`,
+                `<i slot="toolbar" class="separator"></i>`,
                 `<mwc-icon-button slot="toolbar" action="format" starttoken="${escapeHtml(config.bold.starttoken)}" middletoken="${escapeHtml(config.bold.middletoken)}" endtoken="${escapeHtml(config.bold.endtoken)}"><svg viewBox="0 0 24 24" role="presentation"><path d="${config.bold.icon}" style="fill: currentcolor;"></path></svg></mwc-icon-button>`,
                 `<mwc-icon-button slot="toolbar" action="format" starttoken="${escapeHtml(config.italic.starttoken)}" middletoken="${escapeHtml(config.italic.middletoken)}" endtoken="${escapeHtml(config.italic.endtoken)}"><svg viewBox="0 0 24 24" role="presentation"><path d="${config.italic.icon}" style="fill: currentcolor;"></path></svg></mwc-icon-button>`,
-                `<mwc-icon-button slot="toolbar" action="format" starttoken="${escapeHtml(config.underline.starttoken)}" middletoken="${escapeHtml(config.underline.middletoken)}" endtoken="${escapeHtml(config.underline.endtoken)}"><svg viewBox="0 0 24 24" role="presentation"><path d="${config.underline.icon}" style="fill: currentcolor;"></path></svg></mwc-icon-button>`,
                 `<mwc-icon-button slot="toolbar" action="format" starttoken="${escapeHtml(config.strikethrough.starttoken)}" middletoken="${escapeHtml(config.strikethrough.middletoken)}" endtoken="${escapeHtml(config.strikethrough.endtoken)}"><svg viewBox="0 0 24 24" role="presentation"><path d="${config.strikethrough.icon}" style="fill: currentcolor;"></path></svg></mwc-icon-button>`,
-                `<mwc-icon-button slot="toolbar" action="format" starttoken="${escapeHtml(config.supscript.starttoken)}" middletoken="${escapeHtml(config.supscript.middletoken)}" endtoken="${escapeHtml(config.supscript.endtoken)}"><svg viewBox="0 0 24 24" role="presentation"><path d="${config.supscript.icon}" style="fill: currentcolor;"></path></svg></mwc-icon-button>`,
-                `<mwc-icon-button slot="toolbar" action="format" starttoken="${escapeHtml(config.subscript.starttoken)}" middletoken="${escapeHtml(config.subscript.middletoken)}" endtoken="${escapeHtml(config.subscript.endtoken)}"><svg viewBox="0 0 24 24" role="presentation"><path d="${config.subscript.icon}" style="fill: currentcolor;"></path></svg></mwc-icon-button>`,
-                `<i slot="toolbar" class="mde-ultimate-separator"></i>`,
+                `<i slot="toolbar" class="separator"></i>`,
                 `<mwc-icon-button slot="toolbar" action="heading"><svg viewBox="0 0 24 24" role="presentation"><path d="${config.heading.icon}" style="fill: currentcolor;"></path></svg></mwc-icon-button>`,
                 `<mwc-icon-button slot="toolbar" action="quote"><svg viewBox="0 0 24 24" role="presentation"><path d="${config.quote.icon}" style="fill: currentcolor;"></path></svg></mwc-icon-button>`,
-                `<mwc-icon-button slot="toolbar" action="format" starttoken="${escapeHtml(config.spoiler.starttoken)}" middletoken="${escapeHtml(config.spoiler.middletoken)}" endtoken="${escapeHtml(config.spoiler.endtoken)}"><svg viewBox="0 0 24 24" role="presentation"><path d="${config.spoiler.icon}" style="fill: currentcolor;"></path></svg></mwc-icon-button>`,
                 `<mwc-icon-button slot="toolbar" action="format" starttoken="${escapeHtml(config.inlineCode.starttoken)}" middletoken="${escapeHtml(config.inlineCode.middletoken)}" endtoken="${escapeHtml(config.inlineCode.endtoken)}"><svg viewBox="0 0 24 24" role="presentation"><path d="${config.inlineCode.icon}" style="fill: currentcolor;"></path></svg></mwc-icon-button>`,
                 `<mwc-icon-button slot="toolbar" action="format" starttoken="${escapeHtml(config.codeBlock.starttoken)}" middletoken="${escapeHtml(config.codeBlock.middletoken)}" endtoken="${escapeHtml(config.codeBlock.endtoken)}"><svg viewBox="0 0 24 24" role="presentation"><path d="${config.codeBlock.icon}" style="fill: currentcolor;"></path></svg></mwc-icon-button>`,
-                `<i slot="toolbar" class="mde-ultimate-separator"></i>`,
+                `<i slot="toolbar" class="separator"></i>`,
                 `<mwc-icon-button slot="toolbar" action="format" starttoken="${escapeHtml(config.orderedList.starttoken)}" middletoken="${escapeHtml(config.orderedList.middletoken)}"><svg viewBox="0 0 24 24" role="presentation"><path d="${config.orderedList.icon}" style="fill: currentcolor;"></path></svg></mwc-icon-button>`,
                 `<mwc-icon-button slot="toolbar" action="format" starttoken="${escapeHtml(config.unorderedList.starttoken)}" middletoken="${escapeHtml(config.unorderedList.middletoken)}"><svg viewBox="0 0 24 24" role="presentation"><path d="${config.unorderedList.icon}" style="fill: currentcolor;"></path></svg></mwc-icon-button>`,
                 `<mwc-icon-button slot="toolbar" action="format" starttoken="${escapeHtml(config.table.starttoken)}" middletoken="${escapeHtml(config.table.middletoken)}" endtoken="${escapeHtml(config.table.endtoken)}" dontformatselection><svg viewBox="0 0 24 24" role="presentation"><path d="${config.table.icon}" style="fill: currentcolor;"></path></svg></mwc-icon-button>`,
-                `<i slot="toolbar" class="mde-ultimate-separator"></i>`,
+                `<i slot="toolbar" class="separator"></i>`,
                 `<mwc-icon-button slot="toolbar" action="format" starttoken="${escapeHtml(config.link.starttoken)}" middletoken="${escapeHtml(config.link.middletoken)}" endtoken="${escapeHtml(config.link.endtoken)}"><svg viewBox="0 0 24 24" role="presentation"><path d="${config.link.icon}" style="fill: currentcolor;"></path></svg></mwc-icon-button>`,
-                `<mwc-icon-button slot="toolbar" action="format" starttoken="${escapeHtml(config.embed.starttoken)}" middletoken="${escapeHtml(config.embed.middletoken)}" endtoken="${escapeHtml(config.embed.endtoken)}"><svg viewBox="0 0 24 24" role="presentation"><path d="${config.embed.icon}" style="fill: currentcolor;"></path></svg></mwc-icon-button>`,
-                `<i slot="toolbar" class="mde-ultimate-separator"></i>`,
+                `<mwc-icon-button slot="toolbar" action="format" starttoken="${escapeHtml(config.image.starttoken)}" middletoken="${escapeHtml(config.image.middletoken)}" endtoken="${escapeHtml(config.image.endtoken)}"><svg viewBox="0 0 24 24" role="presentation"><path d="${config.image.icon}" style="fill: currentcolor;"></path></svg></mwc-icon-button>`,
+                `<i slot="toolbar" class="separator"></i>`,
                 `<mwc-icon-button slot="toolbar" action="resize"><svg viewBox="0 0 24 24" role="presentation"><path d="${config.resize.icon}" style="fill: currentcolor;"></path></svg></mwc-icon-button>`,
                 `<mwc-icon-button slot="toolbar" action="template" text="${escapeHtml(config.help.text)}"><svg viewBox="0 0 24 24" role="presentation"><path d="${config.help.icon}" style="fill: currentcolor;"></path></svg></mwc-icon-button>`,
                 `<style slot="toolbar">${Style3.cssText}</style>`
@@ -279,7 +252,7 @@ export default class MDEUltimate extends LitElement {
             const selend = this.textArea.selectionEnd
             const txt = this.textArea.value
             if (selstart === selend) {
-                const before = txt.substring(0, selstart)
+                let before = txt.substring(0, selstart)
                 const after = txt.substring(selend, txt.length)
                 if (/(\n)[\#]{1,5}( )$/.test(before)) {
                     before = before.substring(0, selstart - 1)
@@ -326,7 +299,7 @@ export default class MDEUltimate extends LitElement {
                     this.textArea.focus()
                     this.previewUpdateAndRecord()
                 } else {
-                    const text = txt.substring(selstart - 2, selstart).replace(/\n\n/, '').replace(/^\n/, '').replace(/[^\n]\n/, '\n').replace(/([^\n]|\n)?[^\n]/, '\n\n') + '> '
+                    let text = txt.substring(selstart - 2, selstart).replace(/\n\n/, '').replace(/^\n/, '').replace(/[^\n]\n/, '\n').replace(/([^\n]|\n)?[^\n]/, '\n\n') + '> '
                     this.textArea.value = before + text + after
                     this.textArea.selectionStart = this.textArea.selectionEnd = selstart + text.length
                     this.textArea.focus()
@@ -378,7 +351,7 @@ export default class MDEUltimate extends LitElement {
         this.previewUpdate()
     }
 
-    renderMarkdown = (val) => renderMarkdown(val)
+    renderMarkdown = renderMarkdown
 
     previewUpdate = () => {
         this.previewElement.innerHTML = this.renderMarkdown(this.textArea.value)

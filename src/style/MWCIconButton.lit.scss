@@ -1,6 +1,5 @@
 @use '@material/theme';
-@use "@material/icon-button";
-@include icon-button.core-styles;
+@use '@material/icon-button';
 
 mwc-icon-button {
     @include icon-button.ink-color(on-primary);
