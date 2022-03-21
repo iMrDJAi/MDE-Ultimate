@@ -289,7 +289,7 @@ export default class MDEUltimate extends LitElement {
             const selstart = this.textArea.selectionStart
             const selend = this.textArea.selectionEnd
             const txt = this.textArea.value
-            const before = txt.substring(0, selstart)
+            let before = txt.substring(0, selstart)
             const after = txt.substring(selend, txt.length)
             if (selstart === selend) {
                 if (/(^>+( )$)|(\n>+( )$)/.test(before)) {
@@ -306,7 +306,7 @@ export default class MDEUltimate extends LitElement {
                     this.previewUpdateAndRecord()
                 }
             } else {
-                const text = txt.substring(selstart - 2, selstart).replace(/\n\n/, '').replace(/^\n/, '').replace(/[^\n]\n/, '\n').replace(/([^\n]|\n)?[^\n]/, '\n\n') +
+                let text = txt.substring(selstart - 2, selstart).replace(/\n\n/, '').replace(/^\n/, '').replace(/[^\n]\n/, '\n').replace(/([^\n]|\n)?[^\n]/, '\n\n') +
                 txt.substring(selstart, selend) +
                 txt.substring(selend, selend + 2).replace(/\n\n/, '').replace(/\n[^\n]?/, '\n').replace(/[^\n]([^\n]|\n)?/, '\n\n')
                 text = text.replace(/^(>)/gm, '>$1').replace(/^([^\>|^\n])/gm, '> $1')

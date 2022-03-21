@@ -105,13 +105,24 @@
   }
 
   blockquote {
-    margin: 24px 0;
-    padding: 4px 24px;
+    margin: 12px 0;
+    padding: 2px 12px;
     border-inline-start: 0.25em solid rgb(187, 187, 187);
     background: rgba(187, 187, 187, 0.2);
+    min-width: 150px;
     p {
       margin-top: 16px;
     }
+  }
+
+  & > blockquote {
+    overflow: auto;
+  }
+
+  blockquote blockquote {
+    background: unset;
+    margin: unset;
+    padding: 0 12px;
   }
 
   img {
