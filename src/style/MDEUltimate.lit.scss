@@ -52,7 +52,6 @@
     outline: none;
     border: none;
     background: transparent;
-    unicode-bidi: plaintext;
     @include typography.typography(body1);
     @include theme.property(color, on-surface);
 }

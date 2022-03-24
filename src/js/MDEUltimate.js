@@ -33,7 +33,7 @@ export default class MDEUltimate extends LitElement {
             </div>
             <div class="body">
                 <div class="textarea-container">
-                    <textarea class="textarea" @input=${this.handleTextAreaInput}></textarea>
+                    <textarea class="textarea" dir="auto" @input=${this.handleTextAreaInput}></textarea>
                 </div>
                 <div class="gutter">
                     <svg viewBox="0 0 24 24" role="presentation"><path d="${mdiArrowLeftRightBold}" style="fill: currentcolor;"></path></svg>
